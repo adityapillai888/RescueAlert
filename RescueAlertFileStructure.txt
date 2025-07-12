@@ -1,0 +1,49 @@
+rescuetap/
+│
+├── frontend/                     # React frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── components/           # UI components (reusable)
+│   │   │   ├── AlertButton.js
+│   │   │   ├── ContactForm.js
+│   │   │   └── ContactList.js
+│   │   ├── pages/                # Full-page views
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   │   │   └── Dashboard.js
+│   │   ├── services/             # API calls
+│   │   │   ├── authService.js
+│   │   │   └── contactService.js
+│   │   ├── utils/                # Helpers (JWT, validation, etc.)
+│   │   │   └── tokenUtils.js
+│   │   ├── App.js
+│   │   ├── index.js
+│   │   └── .env.example
+│   └── package.json
+│
+├── backend/                      # AWS Lambda functions
+│   ├── functions/
+│   │   ├── register/             # POST /register
+│   │   │   └── handler.py
+│   │   ├── login/                # POST /login
+│   │   │   └── handler.py
+│   │   ├── addContact/           # POST /contacts
+│   │   │   └── handler.py
+│   │   ├── getContacts/          # GET /contacts
+│   │   │   └── handler.py
+│   │   ├── sendAlert/            # POST /alert
+│   │   │   └── handler.py
+│   │   └── utils/                # Shared logic
+│   │       ├── db.py             # DynamoDB wrapper
+│   │       ├── auth.py           # JWT, hashing
+│   │       └── alert.py          # Email/SMS (SES/SNS)
+│   └── requirements.txt
+│
+├── infra/                        # AWS SAM / IaC
+│   ├── template.yaml             # Define Lambda, API Gateway, DynamoDB
+│   ├── deploy.sh                 # One-click deploy
+│   └── teardown.sh               # Cleanup script (stop charges)
+│
+├── .gitignore
+├── README.md
+└── LICENSE (optional)
