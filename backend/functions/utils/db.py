@@ -6,7 +6,7 @@ def table_exists(table_name):
     try:
         table = dynamodb.Table(table_name)
         table.load()  # Triggers a call to check if table exists
-        print(f"🔁 Table '{table_name}' already exists.")
+        print(f" Table '{table_name}' already exists.")
         return True
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
