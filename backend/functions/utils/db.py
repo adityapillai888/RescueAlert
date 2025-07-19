@@ -1,6 +1,7 @@
 import boto3
 from botocore.exceptions import ClientError
 dynamodb=boto3.resource('dynamodb',region_name='ap-south-1')
+from boto3.dynamodb.conditions import Key
 
 def table_exists(table_name):
     try:
@@ -30,8 +31,10 @@ def create_contacts_table():
     if not table_exists('Contacts'):
         dynamodb=boto3.resource('dynamodb',region_name='ap-south-1')
         table=dynamodb.create_table(TableName='Contacts',
-                                    KeySchema=[{'AttributeName':'contact_id','KeyType':'HASH'}],
-                                    AttributeDefinitions=[{'AttributeName':'contact_id','AttributeType':'S'}],
+                                    KeySchema=[{'AttributeName':'user_id','KeyType':'HASH'},
+                                                {'AttributeName':'contact_id','KeyType':'RANGE'}],
+                                    AttributeDefinitions=[{'AttributeName':'user_id','AttributeType':'S'},
+                                                          {'AttributeName':'contact_id','AttributeType':'S'}],
                                     ProvisionedThroughput={'ReadCapacityUnits': 1, 'WriteCapacityUnits': 1}      
                                     )
         print("creating Contacts table..")
@@ -42,8 +45,10 @@ def create_logs_table():
     if not table_exists('Logs'):
         dynamodb=boto3.resource('dynamodb',region_name='ap-south-1')
         table=dynamodb.create_table(TableName='Logs',
-                                    KeySchema=[{'AttributeName':'log_id','KeyType':'HASH'}],
-                                    AttributeDefinitions=[{'AttributeName':'log_id','AttributeType':'S'}],
+                                    KeySchema=[{'AttributeName':'user_id','KeyType':'HASH'},
+                                                {'AttributeName':'log_id','KeyType':'RANGE'}],
+                                    AttributeDefinitions=[{'AttributeName':'user_id','AttributeType':'S'},
+                                                          {'AttributeName':'log_id','AttributeType':'S'}],
                                     ProvisionedThroughput={'ReadCapacityUnits': 1, 'WriteCapacityUnits': 1}      
                                     )
         print("creating Logs table..")
@@ -74,4 +79,61 @@ def insert_log(log_id, log_data):
     table = dynamodb.Table('Logs')
     table.put_item(Item={'log_id': log_id, **log_data})
     print(f"Log {log_id} inserted successfully.")
+
+# Example usage of insertion functions
+# insert_user('user123', {'name': 'John Doe', 'email': 'bla@bla'})
+# insert_contact('contact123', {'user_id': 'user123', 'name': 'Jane Doe', 'phone': '1234567890'})
+# insert_log('log123', {'user_id': 'user123', 'action': 'login', 'timestamp': '2023-10-01T12:00:00Z'})
+
+
+def get_user(user_id):
+    dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+    table = dynamodb.Table('Users')
+    response = table.get_item(Key={'user_id': user_id})
+    return response.get('Item', None)
+
+def get_contacts(user_id):
+    dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+    table = dynamodb.Table('Contacts')
+    response = table.query(
+        KeyConditionExpression=Key('user_id').eq(user_id)
+    )
+    return response.get('Items', [])
+def get_logs(user_id):
+    dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+    table = dynamodb.Table('Logs')
+    response = table.query(
+        KeyConditionExpression=Key('user_id').eq(user_id)
+    )
+    return response.get('Items', [])
+# Example usage of retrieval functions
+# user = get_user('user123')
+# contacts = get_contacts('user123')
+# logs = get_logs('user123')
+# print(user)
+# print(contacts) 
+# print(logs)
+
+def delete_user(user_id):
+    dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+    table = dynamodb.Table('Users')
+    table.delete_item(Key={'user_id': user_id})
+    print(f"User {user_id} deleted successfully.")
+
+def delete_contact(user_id, contact_id):
+    dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+    table = dynamodb.Table('Contacts')
+    table.delete_item(Key={'user_id': user_id, 'contact_id': contact_id})
+    print(f"Contact {contact_id} for user {user_id} deleted successfully.")
+
+def delete_log(user_id, log_id):
+    dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+    table = dynamodb.Table('Logs')
+    table.delete_item(Key={'user_id': user_id, 'log_id': log_id})
+    print(f"Log {log_id} for user {user_id} deleted successfully.")
+
+# Example usage of deletion functions
+# delete_user('user123')
+# delete_contact('user123', 'contact123')
+# delete_log('user123', 'log123')
 
