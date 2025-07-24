@@ -1,5 +1,5 @@
 import json
-from functions.utils import auth, db
+from backend.functions.utils import auth, db
 from botocore.exceptions import ClientError
 
 def lambda_handler(event, context):
@@ -40,15 +40,16 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'message': str(e)})
         }
-    
-event = {
-    "body": json.dumps({
-        "user_id": "testuser123",
-        "password": "TestPass@123",
-        "email": "testuser@example.com"
-    })
-}
 
-response = lambda_handler(event, None)
-print("Status Code:", response["statusCode"])
-print("Response Body:", response["body"])
+# Example usage   
+# event = {
+#     "body": json.dumps({
+#         "user_id": "testuser123",
+#         "password": "TestPass@123",
+#         "email": "testuser@example.com"
+#     })
+# }
+
+# response = lambda_handler(event, None)
+# print("Status Code:", response["statusCode"])
+# print("Response Body:", response["body"])
