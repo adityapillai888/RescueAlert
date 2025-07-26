@@ -3,7 +3,7 @@ import json
 from backend.functions.utils import auth,db
 from botocore.exceptions import ClientError
 
-def handler(event, context):
+def lambda_handler(event, context):
     try:
         #first authenticate the token
         token=event['headers'].get('Authorization', None).replace('Bearer ', '')
@@ -54,6 +54,6 @@ def handler(event, context):
 #     'headers': { 'Authorization': f"Bearer {eg_token}" }
 #     }
 
-# response=handler(sample_event, None)  
+# response=lambda_handler(sample_event, None)  
 # print('Status Code:', response['statusCode'])
 # print('Response Body:', response['body'])

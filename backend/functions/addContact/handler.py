@@ -4,7 +4,7 @@ from backend.functions.utils import auth, db
 from botocore.exceptions import ClientError
 
 
-def handler(event, context):
+def lambda_handler(event, context):
     #first authenticate the token
     token=event['headers'].get('Authorization', None).replace('Bearer ', '')
     if not token:
@@ -83,6 +83,6 @@ def handler(event, context):
 #         'relation': 'friend'
 #     })
 # }
-# response=handler(sample_event, None)  
+# response=lambda_handler(sample_event, None)  
 # print('Status Code:', response['statusCode'])
 # print('Response Body:', response['body'])
