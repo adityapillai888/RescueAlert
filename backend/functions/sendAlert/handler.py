@@ -34,6 +34,7 @@ def lambda_handler(event, context):
     #send alert code(not written yet due to AWS sns and ses costing money)
     for contact in contacts:
         try:
+            print(f'Sending alert to {contact}')
             # Here you would implement the logic to send the alert
             # For example, using AWS SNS or SES to send an email or SMS
             pass  # Replace with actual sending logic
