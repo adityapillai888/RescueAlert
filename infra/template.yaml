@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Safe, cost-free Lambda + HTTP API for Contact System
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: python3.10
+    MemorySize: 128
+    Architectures:
+      - x86_64
+
+Resources:
+
+  RegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: register
+      CodeUri: ../backend
+      Handler: functions/register/handler.lambda_handler
+      Events:
+        RegisterAPI:
+          Type: HttpApi
+          Properties:
+            Path: /register
+            Method: POST
+
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: login
+      CodeUri: ../backend
+      Handler: functions/login/handler.lambda_handler
+      Events:
+        LoginAPI:
+          Type: HttpApi
+          Properties:
+            Path: /login
+            Method: POST
+
+  AddContactFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: add-contact
+      CodeUri: ../backend
+      Handler: functions/addContact/handler.lambda_handler
+      Events:
+        AddContactAPI:
+          Type: HttpApi
+          Properties:
+            Path: /contacts
+            Method: POST
+
+  GetContactsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: get-contacts
+      CodeUri: ../backend
+      Handler: functions/getContacts/handler.lambda_handler
+      Events:
+        GetContactsAPI:
+          Type: HttpApi
+          Properties:
+            Path: /contacts
+            Method: GET
